@@ -1,4 +1,5 @@
 # SkeetGUI for Minecraft 1.12.2
+![gui](https://i.imgur.com/0FPXkaN.png)
 ## About
 **What is this project?**
 This project aims to port a certain CS:GO GUI into Minecraft version 1.12.2. It allows the user to enable / disable certain modules and change the settings in them.
