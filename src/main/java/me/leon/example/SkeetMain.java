@@ -1,7 +1,8 @@
-package me.leon.skeetgui;
+package me.leon.example;
 
+import me.leon.example.utils.ModuleManager;
+import me.leon.example.utils.ProjectionManager;
 import me.leon.skeetgui.gui.SkeetGUI;
-import me.leon.skeetgui.utils.font.CFontRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -12,8 +13,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.*;
-
+/**
+ * Main class, for loading in the GUI
+ * Can be replaced with your own main class, however it does require you to init the objects listed here.
+ */
 @Mod(modid = SkeetMain.MODID, name = SkeetMain.NAME, version = SkeetMain.VERSION)
 public class SkeetMain {
     public static final String MODID = "skeetgui";
@@ -22,9 +25,11 @@ public class SkeetMain {
 
     public static Logger logger;
 
-    public static CFontRenderer fontRenderer;
     public static SkeetGUI skeetGUI;
     public static SkeetMain INSTANCE;
+
+    public static ModuleManager moduleManager;
+    public static ProjectionManager projectionManager;
 
     @Mod.EventHandler
     public void onInit(FMLPreInitializationEvent event) {
@@ -33,8 +38,13 @@ public class SkeetMain {
 
         logger = LogManager.getLogger(NAME);
 
-        fontRenderer = new CFontRenderer(new Font("Verdana", Font.PLAIN, 12), true, true);
-        skeetGUI = new SkeetGUI();
+        SkeetGUI.setCategories(Category.values());
+        SkeetGUI.setConfig(new GenericConfig());
+        SkeetGUI.setModules(moduleManager = new ModuleManager());
+
+        skeetGUI = new SkeetGUI("Arial");
+
+        projectionManager = new ProjectionManager();
     }
 
     @SubscribeEvent
@@ -44,10 +54,10 @@ public class SkeetMain {
             if(Keyboard.isCreated()) {
                 if(Keyboard.getEventKeyState()) {
                     final int key = Keyboard.getEventKey();
-                    if(key == SkeetGUI.GUI_KEY && mc.currentScreen != skeetGUI) {
+                    if(key == SkeetGUI.config.getGuiKey() && mc.currentScreen != skeetGUI) {
                         mc.displayGuiScreen(skeetGUI);
                         skeetGUI.onGuiOpened();
-                    } else if(key == SkeetGUI.GUI_KEY_CLOSE && mc.currentScreen == skeetGUI) {
+                    } else if(key == SkeetGUI.config.getCloseGuiKey() && mc.currentScreen == skeetGUI) {
                         mc.displayGuiScreen(null);
                     }
                 }
